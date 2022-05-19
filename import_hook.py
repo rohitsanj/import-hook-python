@@ -1,5 +1,4 @@
 import sqlite3
-import importlib.abc
 
 foo_code = """
 print("foo is being initialized!")
