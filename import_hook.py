@@ -41,7 +41,7 @@ def create_repo_table():
     return cursor
 
 
-class DBFinder(importlib.abc.MetaPathFinder):
+class DBImporter:
     def __init__(self, cursor: sqlite3.Cursor):
         self.cursor = cursor
 
@@ -51,15 +51,14 @@ class DBFinder(importlib.abc.MetaPathFinder):
 
         self.cursor.execute("select 1 from repository where fullname = ?", (fullname,))
         if self.cursor.fetchone():
-            return ModuleSpec(fullname, DBLoader(cursor=self.cursor))
+            return ModuleSpec(fullname, self)
 
         # We don't have it in the database, go look elsewhere
         return None
 
-
-class DBLoader(importlib.abc.Loader):
-    def __init__(self, cursor: sqlite3.Cursor) -> None:
-        self.cursor = cursor
+    def create_module(self, _module_name):
+        # Let Python create the module, because we're too lazy
+        return None
 
     def exec_module(self, module):
         self.cursor.execute(
@@ -72,4 +71,4 @@ class DBLoader(importlib.abc.Loader):
 import sys
 
 cursor = create_repo_table()
-sys.meta_path.insert(0, DBFinder(cursor=cursor))
+sys.meta_path.insert(0, DBImporter(cursor=cursor))
