@@ -41,7 +41,7 @@ def create_repo_table():
     return cursor
 
 
-class DBFinder(importlib.abc.Finder):
+class DBFinder(importlib.abc.MetaPathFinder):
     def __init__(self, cursor: sqlite3.Cursor):
         self.cursor = cursor
 
