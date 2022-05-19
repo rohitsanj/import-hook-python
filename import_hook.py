@@ -1,4 +1,5 @@
 import sqlite3
+from importlib.machinery import ModuleSpec
 
 foo_code = """
 print("foo is being initialized!")
@@ -46,7 +47,6 @@ class DBImporter:
 
     def find_spec(self, fullname: str, path, target):
         # Query database to see if we have the `fullname` module
-        from importlib.machinery import ModuleSpec
 
         self.cursor.execute("select 1 from repository where fullname = ?", (fullname,))
         if self.cursor.fetchone():
